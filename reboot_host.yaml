@@ -1,0 +1,18 @@
+---
+- name: Test Reboot host
+  hosts: all
+  tasks:
+  - name: Reboot server
+    shell: sleep 3; reboot
+    ignore_errors: true
+    changed_when: false
+    async: 1
+    poll: 0
+  - name: Wait for server to come back after reboot
+    wait_for_connection:
+      timeout: 600
+      delay: 20
+    register: reboot_result
+  - name: Reboot time
+    debug:
+      msg: "The system rebooted in {{ reboot_result.elapsed }} seconds."
